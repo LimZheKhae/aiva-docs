@@ -5,9 +5,14 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'My Site',
+  title: 'Aiva Docs',
   tagline: 'Dinosaurs are cool',
   favicon: 'img/favicon.ico',
+
+  markdown: {
+    mermaid: true,
+  },
+  themes: ['@docusaurus/theme-mermaid'],
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -35,16 +40,24 @@ const config: Config = {
     locales: ['en'],
   },
 
+  plugins: [
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'onepercent',
+        path: 'onepercent',
+        routeBasePath: 'onepercent',
+        sidebarPath: './sidebarsOnepercent.ts',
+      },
+    ],
+  ],
+
   presets: [
     [
       'classic',
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         blog: {
           showReadingTime: true,
@@ -52,11 +65,6 @@ const config: Config = {
             type: ['rss', 'atom'],
             xslt: true,
           },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-          // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
           onUntruncatedBlogPosts: 'warn',
@@ -75,17 +83,30 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'My Site',
+      title: 'Aiva Docs',
       logo: {
         alt: 'My Site Logo',
         src: 'img/logo.svg',
       },
       items: [
+        // {
+        //   type: 'docSidebar',
+        //   sidebarId: 'tutorialSidebar',
+        //   position: 'left',
+        //   label: 'Tutorial',
+        // },
         {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
+          type: 'dropdown',
+          label: 'Projects',
           position: 'left',
-          label: 'Tutorial',
+          items: [
+            {
+              type: 'docSidebar',
+              sidebarId: 'onepercentSidebar',
+              docsPluginId: 'onepercent',
+              label: 'Onepercent',
+            },
+          ],
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
@@ -141,7 +162,7 @@ const config: Config = {
       copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
     },
     prism: {
-      theme: prismThemes.github,
+      theme: prismThemes.dracula,
       darkTheme: prismThemes.dracula,
     },
   } satisfies Preset.ThemeConfig,
