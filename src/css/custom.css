@@ -410,6 +410,83 @@ hr {
   border-left-width: 3px;
 }
 
+/* Note — blue */
+.alert--secondary {
+  --ifm-alert-background-color: #E7F0FA;
+  --ifm-alert-border-color: #4A90D9;
+  --ifm-alert-foreground-color: #1A3A5C;
+}
+
+/* Info — blue */
+.alert--info {
+  --ifm-alert-background-color: #E7F0FA;
+  --ifm-alert-border-color: #4A90D9;
+  --ifm-alert-foreground-color: #1A3A5C;
+}
+
+/* Tip — green */
+.alert--success {
+  --ifm-alert-background-color: #E6F5EA;
+  --ifm-alert-border-color: #3DA35D;
+  --ifm-alert-foreground-color: #1A3A24;
+}
+
+/* Caution — amber */
+.alert--warning {
+  --ifm-alert-background-color: #FDF3E0;
+  --ifm-alert-border-color: #D4960A;
+  --ifm-alert-foreground-color: #5C3D0A;
+}
+
+/* Danger — red */
+.alert--danger {
+  --ifm-alert-background-color: #FDEAEA;
+  --ifm-alert-border-color: #D94A4A;
+  --ifm-alert-foreground-color: #5C1A1A;
+}
+
+/* Dark mode admonitions */
+[data-theme='dark'] .alert--secondary {
+  --ifm-alert-background-color: #172030;
+  --ifm-alert-border-color: #4A90D9;
+  --ifm-alert-foreground-color: #C8DCF0;
+}
+
+[data-theme='dark'] .alert--info {
+  --ifm-alert-background-color: #172030;
+  --ifm-alert-border-color: #4A90D9;
+  --ifm-alert-foreground-color: #C8DCF0;
+}
+
+[data-theme='dark'] .alert--success {
+  --ifm-alert-background-color: #152518;
+  --ifm-alert-border-color: #3DA35D;
+  --ifm-alert-foreground-color: #C8E8D0;
+}
+
+[data-theme='dark'] .alert--warning {
+  --ifm-alert-background-color: #2A2010;
+  --ifm-alert-border-color: #D4960A;
+  --ifm-alert-foreground-color: #F0DDB8;
+}
+
+[data-theme='dark'] .alert--danger {
+  --ifm-alert-background-color: #2A1515;
+  --ifm-alert-border-color: #D94A4A;
+  --ifm-alert-foreground-color: #F0C8C8;
+}
+
+/* Inline code inside admonitions */
+.alert :not(pre) > code {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='dark'] .alert :not(pre) > code {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
 /* ═══════════════════════════════════════
    PAGINATION (prev/next)
    ═══════════════════════════════════════ */
