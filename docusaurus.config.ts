@@ -9,6 +9,8 @@ const config: Config = {
   tagline: 'Dinosaurs are cool',
   favicon: 'img/favicon.ico',
 
+  clientModules: ['./src/mermaid-viewbox-fix.js'],
+
   markdown: {
     mermaid: true,
   },

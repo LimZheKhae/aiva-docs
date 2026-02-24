@@ -504,6 +504,30 @@ article > header + p {
 }
 
 /* ═══════════════════════════════════════
+   MERMAID DIAGRAMS — fix SVG whitespace
+   Mermaid sets an incorrect height attr on
+   the SVG (e.g. 2043 for a 500px diagram).
+   See: github.com/mermaid-js/mermaid/issues/1984
+   viewBox is corrected by src/mermaid-viewbox-fix.js
+   ═══════════════════════════════════════ */
+.docusaurus-mermaid-container {
+  overflow-x: auto;
+}
+
+.docusaurus-mermaid-container svg[id^="mermaid"] {
+  height: auto !important;
+  min-width: 600px;
+}
+
+.docusaurus-mermaid-container svg foreignObject {
+  overflow: visible !important;
+}
+
+.docusaurus-mermaid-container svg foreignObject div {
+  white-space: nowrap !important;
+}
+
+/* ═══════════════════════════════════════
    TEXT SELECTION
    ═══════════════════════════════════════ */
 ::selection {
