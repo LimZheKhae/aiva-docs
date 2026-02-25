@@ -75,15 +75,15 @@ export const onRequest = async (context: PagesContext): Promise<Response> => {
       const [username, password] = decoded.split(':');
 
       if (username === expectedUsername && password === expectedPassword) {
-        // Auth succeeded — set session cookie and redirect to the same URL
-        // so the browser loads the page with the cookie on all sub-requests
+        // Auth succeeded — serve the page and attach session cookie
         const cookie = `${COOKIE_NAME}=${expectedToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${COOKIE_MAX_AGE}`;
-        return new Response(null, {
-          status: 302,
-          headers: {
-            Location: request.url,
-            'Set-Cookie': cookie,
-          },
+        const response = await next();
+        const newHeaders = new Headers(response.headers);
+        newHeaders.append('Set-Cookie', cookie);
+        return new Response(response.body, {
+          status: response.status,
+          statusText: response.statusText,
+          headers: newHeaders,
         });
       }
     }
