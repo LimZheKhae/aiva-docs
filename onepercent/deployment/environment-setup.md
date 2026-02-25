@@ -1,40 +1,20 @@
 ---
 sidebar_position: 1
 title: Environment setup
-description: Environment variables and local development configuration
+description: "How to set up local development — cloning the monorepo, configuring environment variables, and running the dev server."
 ---
 
 # Environment setup
 
-Both the admin and portal apps require environment variables for Supabase, authentication, and app-specific settings.
+Both the admin and portal apps require environment variables for Supabase connectivity. The admin app has additional variables for WhatsApp and email integrations.
 
-## Required variables
+## Prerequisites
 
-### Shared (both apps)
+- **Node.js 20+** — required by Next.js 16.
+- **npm 10+** — the monorepo uses npm workspaces (pinned to `npm@10.0.0` in `package.json`).
+- **Supabase project** — you need a Supabase project with the `gym` schema created and migrations applied.
 
-| Variable | Description |
-| --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous/public key |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (server-side only) |
-
-### Admin app
-
-| Variable | Description |
-| --- | --- |
-| `NEXT_PUBLIC_APP_URL` | Admin app URL (e.g., `https://admin.yourgym.com`) |
-| `ADMIN_COOKIE_NAME` | Cookie name for admin sessions (default: `admin-auth`) |
-
-### Portal app
-
-| Variable | Description |
-| --- | --- |
-| `NEXT_PUBLIC_APP_URL` | Portal app URL (e.g., `https://portal.yourgym.com`) |
-| `PORTAL_COOKIE_NAME` | Cookie name for portal sessions (default: `portal-auth`) |
-
-## Local development
-
-1. Clone the monorepo and install dependencies:
+## Clone and install
 
 ```bash
 git clone <repo-url>
@@ -42,26 +22,70 @@ cd onepercent
 npm install
 ```
 
-2. Copy the example env file in each app:
+Turborepo and all workspace dependencies install automatically.
+
+## Environment variables
+
+Create a `.env.local` file in each app directory. The portal includes a `.env.example` you can copy. The admin app doesn't have one — create it manually.
 
 ```bash
-cp apps/admin/.env.example apps/admin/.env.local
 cp apps/portal/.env.example apps/portal/.env.local
 ```
 
-3. Fill in your Supabase credentials from the [Supabase dashboard](https://supabase.com/dashboard) under **Settings > API**.
+### Shared variables (both apps)
 
-4. Start the dev server:
+| Variable | Description |
+| --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL (e.g., `https://xxxx.supabase.co`). |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous/public API key. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key. Server-side only — never expose to the browser. |
+
+Find these in your Supabase dashboard under **Settings > API**.
+
+### Admin-only variables
+
+| Variable | Required | Default | Description |
+| --- | --- | --- | --- |
+| `WAHA_API_URL` | No | `http://localhost:3000` | WAHA (WhatsApp HTTP API) server URL. |
+| `WAHA_API_KEY` | No | — | API key for WAHA authentication. |
+| `RESEND_API_KEY` | No | — | Resend email service key for invoice emails and portal invitations. |
+
+:::warning
+Never commit `.env.local` files. They're already in `.gitignore`, but double-check before pushing.
+:::
+
+## Run the dev server
 
 ```bash
-# Run both apps
-npx turbo dev
+# Run both apps simultaneously
+npm run dev
 
-# Run a specific app
-npx turbo dev --filter=admin
-npx turbo dev --filter=portal
+# Run only the admin app (port 3000)
+npm run dev:admin
+
+# Run only the portal app (port 3002)
+npm run dev:portal
 ```
 
-:::caution
-Never commit `.env.local` files. They are already in `.gitignore`, but double-check before pushing.
-:::
+Both apps use **Turbopack** for faster development builds (enabled via the `--turbopack` flag in each app's dev script).
+
+## Other commands
+
+| Command | Purpose |
+| --- | --- |
+| `npm run build` | Production build for both apps. |
+| `npm run type-check` | Run TypeScript type checking across all packages. |
+| `npm run lint` | Run ESLint across all packages. |
+| `npm run types:generate` | Regenerate database types from the Supabase `gym` schema into `packages/database/src/database.types.ts`. |
+| `npm run clean` | Remove all `.next` build outputs and `node_modules`. |
+
+## Supabase client configuration
+
+Both apps configure their Supabase clients to use the `gym` schema (not the default `public` schema). Each app uses a separate auth cookie to avoid session conflicts:
+
+| App | Cookie name |
+| --- | --- |
+| Admin | `admin-auth` |
+| Portal | `portal-auth` |
+
+This means you can be logged into both apps simultaneously without session conflicts.
