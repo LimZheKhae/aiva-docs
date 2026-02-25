@@ -53,7 +53,7 @@ This documentation is organized into sections for different audiences:
 | Section | Audience | What you'll find |
 | --- | --- | --- |
 | [**Technical docs**](./technical/architecture) | Developers | Architecture, authentication flows, RBAC system, and API references. |
-| [**User manual**](./user-manual/getting-started) | Staff and members | Step-by-step guides for using the Admin and Portal apps. |
+| [**User Guide**](./user-guide/getting-started) | Staff and members | Step-by-step guides for using the Admin and Portal apps. |
 | [**Deployment**](./deployment/environment-setup) | DevOps and developers | Environment setup, hosting configuration, and CI/CD. |
 | [**FAQ**](./faq/common-issues) | Everyone | Common issues, troubleshooting, and frequently asked questions. |
 | [**Changelog**](./changelog) | Everyone | Release notes and version history. |

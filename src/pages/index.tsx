@@ -19,7 +19,7 @@ const projects: Project[] = [
   {
     name: 'Onepercent',
     description:
-      'User guides, deployment instructions, technical reference, and FAQ for the Onepercent platform.',
+      'User guide, deployment instructions, technical reference, and FAQ for the Onepercent platform.',
     href: '/onepercent/intro',
   },
   {

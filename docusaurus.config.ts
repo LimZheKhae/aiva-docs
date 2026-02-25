@@ -120,7 +120,7 @@ const config: Config = {
     },
     footer: {
       style: 'dark',
-      copyright: `© ${new Date().getFullYear()} Aiva. All rights reserved.`,
+      copyright: `© ${new Date().getFullYear()} Aetherion Dataworks. All rights reserved.`,
     },
     prism: {
       theme: prismThemes.dracula,
