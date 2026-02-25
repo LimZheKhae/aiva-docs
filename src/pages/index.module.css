@@ -1,23 +1,373 @@
 /**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
+ * Homepage — "The Library"
+ * Warm, editorial docs portal with hero, staggered reveals, grain texture
  */
 
-.heroBanner {
-  padding: 4rem 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
+/* ═══════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════ */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.buttons {
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════ */
+.hero {
+  position: relative;
+  min-height: 440px;
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.heroBg {
+  position: absolute;
+  inset: 0;
+  background-image: url('/img/hero-library.jpg');
+  background-size: cover;
+  background-position: center 40%;
+  filter: brightness(0.35);
+  animation: fadeIn 0.8s ease-out both;
+}
+
+/* Warm vignette overlay for depth */
+.heroBg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 70% 60% at center 40%,
+    transparent 0%,
+    rgba(20, 20, 19, 0.35) 100%
+  );
+  pointer-events: none;
+}
+
+[data-theme='dark'] .heroBg {
+  filter: brightness(0.2);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+  padding: 5rem 1.5rem;
+}
+
+.heroTitle {
+  font-family: var(--ifm-font-family-base);
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #FAF9F3;
+  margin: 0 0 1rem;
+  line-height: 1.15;
+  animation: fadeUp 0.7s ease-out 0.15s both;
+}
+
+.heroSubtitle {
+  font-family: var(--ifm-font-family-base);
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: rgba(250, 249, 243, 0.8);
+  margin: 0 0 2rem;
+  animation: fadeUp 0.7s ease-out 0.3s both;
+}
+
+.heroCtas {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeUp 0.7s ease-out 0.45s both;
+}
+
+.ctaPrimary {
+  font-family: var(--claude-font-ui);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.7rem 1.5rem;
+  border-radius: 6px;
+  border: none;
+  background: #C7593A;
+  color: #FAF9F3;
+  text-decoration: none;
+  transition: background 0.15s ease, transform 0.15s ease;
+  cursor: pointer;
+}
+
+.ctaPrimary:hover {
+  background: #B34F34;
+  color: #FAF9F3;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.ctaSecondary {
+  font-family: var(--claude-font-ui);
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.7rem 1.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(250, 249, 243, 0.35);
+  background: transparent;
+  color: #FAF9F3;
+  text-decoration: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  cursor: pointer;
+}
+
+.ctaSecondary:hover {
+  border-color: rgba(250, 249, 243, 0.6);
+  background: rgba(250, 249, 243, 0.06);
+  color: #FAF9F3;
+  text-decoration: none;
+}
+
+/* ═══════════════════════════════════════
+   MAIN CONTENT
+   ═══════════════════════════════════════ */
+.content {
+  position: relative;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 3.5rem 2rem 5rem;
+}
+
+/* Subtle grain texture for tactile warmth */
+.content::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-theme='dark'] .content::before {
+  opacity: 0.04;
+}
+
+@media screen and (max-width: 768px) {
+  .content {
+    padding: 2rem 1.25rem 3.5rem;
+  }
+}
+
+/* ── Section label ── */
+.sectionLabel {
+  font-family: var(--claude-font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ifm-font-color-secondary);
+  margin: 0 0 1.25rem;
+  animation: fadeUp 0.6s ease-out 0.5s both;
+}
+
+/* ═══════════════════════════════════════
+   PROJECT CARDS
+   ═══════════════════════════════════════ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 3.5rem;
+}
+
+.card {
+  position: relative;
+  display: block;
+  padding: 1.75rem;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--claude-rule-color);
+  border-left: 3px solid transparent;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  animation: fadeUp 0.6s ease-out both;
+}
+
+/* Staggered reveal — each card enters slightly after the previous */
+.card:nth-child(1) { animation-delay: 0.55s; }
+.card:nth-child(2) { animation-delay: 0.65s; }
+.card:nth-child(3) { animation-delay: 0.75s; }
+
+.card:hover {
+  border-left-color: var(--ifm-color-primary);
+  box-shadow: 0 6px 24px rgba(20, 20, 19, 0.08);
+  transform: translateY(-2px);
+  text-decoration: none;
+  color: inherit;
+}
+
+[data-theme='dark'] .card:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+.cardName {
+  font-family: var(--claude-font-ui);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ifm-heading-color);
+  margin: 0 0 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cardArrow {
+  font-size: 1.1rem;
+  color: var(--ifm-color-primary);
+  transition: transform 0.2s ease;
+}
+
+.card:hover .cardArrow {
+  transform: translateX(4px);
+}
+
+.cardDesc {
+  font-family: var(--ifm-font-family-base);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--ifm-font-color-secondary);
+  margin: 0;
+}
+
+/* ── Featured card (first/active project) ── */
+.featured {
+  border-left: 3px solid var(--ifm-color-primary);
+  background:
+    linear-gradient(
+      135deg,
+      var(--ifm-background-surface-color) 0%,
+      var(--claude-bg-300, #EDEADF) 100%
+    );
+}
+
+[data-theme='dark'] .featured {
+  background:
+    linear-gradient(
+      135deg,
+      var(--ifm-background-surface-color) 0%,
+      rgba(48, 48, 46, 0.6) 100%
+    );
+}
+
+.featured:hover {
+  box-shadow: 0 8px 32px rgba(199, 89, 58, 0.10);
+}
+
+[data-theme='dark'] .featured:hover {
+  box-shadow: 0 8px 32px rgba(217, 119, 87, 0.12);
+}
+
+/* ── Coming soon ── */
+.comingSoon {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.badge {
+  font-family: var(--claude-font-ui);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ifm-font-color-secondary);
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--claude-rule-color);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════
+   DIVIDER — editorial ornament
+   ═══════════════════════════════════════ */
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0 0 3rem;
+  animation: fadeIn 0.8s ease-out 0.85s both;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  max-width: 80px;
+  height: 1px;
+  background: var(--claude-rule-color);
+}
+
+.dividerDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ifm-color-primary);
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════
+   PULL QUOTE — centered typographic statement
+   ═══════════════════════════════════════ */
+.pullQuote {
+  border: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  animation: fadeUp 0.7s ease-out 0.95s both;
+}
+
+.pullQuote p {
+  font-family: var(--ifm-font-family-base);
+  font-size: 1.5rem;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--ifm-font-color-secondary);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+@media screen and (max-width: 768px) {
+  .pullQuote p {
+    font-size: 1.25rem;
+  }
+}
+
+/* ═══════════════════════════════════════
+   STORY — longer narrative text
+   ═══════════════════════════════════════ */
+.story {
+  font-family: var(--ifm-font-family-base);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--ifm-font-color-secondary);
+  text-align: center;
+  max-width: 600px;
+  margin: 1.75rem auto 0;
+  animation: fadeUp 0.7s ease-out 1.05s both;
 }
