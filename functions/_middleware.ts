@@ -72,7 +72,10 @@ export const onRequest = async (context: PagesContext): Promise<Response> => {
 
     if (scheme === 'Basic' && encoded) {
       const decoded = atob(encoded);
-      const [username, password] = decoded.split(':');
+      // Split on first colon only — passwords may contain colons
+      const colonIndex = decoded.indexOf(':');
+      const username = decoded.substring(0, colonIndex);
+      const password = decoded.substring(colonIndex + 1);
 
       if (username === expectedUsername && password === expectedPassword) {
         // Auth succeeded — serve the page and attach session cookie
@@ -80,6 +83,7 @@ export const onRequest = async (context: PagesContext): Promise<Response> => {
         const response = await next();
         const newHeaders = new Headers(response.headers);
         newHeaders.append('Set-Cookie', cookie);
+        newHeaders.set('Cache-Control', 'no-store');
         return new Response(response.body, {
           status: response.status,
           statusText: response.statusText,
@@ -93,6 +97,7 @@ export const onRequest = async (context: PagesContext): Promise<Response> => {
     status: 401,
     headers: {
       'WWW-Authenticate': 'Basic realm="Aiva Docs", charset="UTF-8"',
+      'Cache-Control': 'no-store',
     },
   });
 };
