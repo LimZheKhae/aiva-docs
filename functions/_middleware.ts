@@ -93,17 +93,11 @@ export const onRequest = async (context: PagesContext): Promise<Response> => {
     }
   }
 
-  // Debug: show whether auth header was sent and what username was parsed
-  const debugInfo = authorization
-    ? `Auth header present. Scheme: ${authorization.split(' ')[0]}`
-    : 'No Authorization header sent';
-
-  return new Response(`Authentication required\n\nDebug: ${debugInfo}\nExpected user: ${expectedUsername}`, {
+  return new Response(null, {
     status: 401,
     headers: {
       'WWW-Authenticate': 'Basic realm="Aiva Docs", charset="UTF-8"',
       'Cache-Control': 'no-store',
-      'Content-Type': 'text/plain',
     },
   });
 };
