@@ -1,7 +1,11 @@
 /**
- * Cloudflare Pages middleware — HTTP Basic Auth
+ * Cloudflare Pages middleware — HTTP Basic Auth with cookie session
  *
  * Protects the entire site with a username/password prompt.
+ * After successful Basic Auth, sets a session cookie so all subsequent
+ * requests (JS chunks, JSON data, etc.) are authorized without relying
+ * on the browser to forward the Authorization header.
+ *
  * Credentials are set via Cloudflare environment variables:
  *   - SITE_USERNAME (default: "admin")
  *   - SITE_PASSWORD (required)
@@ -20,6 +24,28 @@ type PagesContext = {
   next: () => Promise<Response>;
 };
 
+const COOKIE_NAME = '__aiva_auth';
+const COOKIE_MAX_AGE = 86400; // 24 hours
+
+async function generateToken(password: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hash))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+function getCookie(request: Request, name: string): string | null {
+  const cookieHeader = request.headers.get('Cookie');
+  if (!cookieHeader) return null;
+  const match = cookieHeader
+    .split(';')
+    .map((c) => c.trim())
+    .find((c) => c.startsWith(`${name}=`));
+  return match ? match.split('=')[1] : null;
+}
+
 export const onRequest = async (context: PagesContext): Promise<Response> => {
   const { request, env, next } = context;
 
@@ -30,7 +56,15 @@ export const onRequest = async (context: PagesContext): Promise<Response> => {
 
   const expectedUsername = env.SITE_USERNAME || 'admin';
   const expectedPassword = env.SITE_PASSWORD;
+  const expectedToken = await generateToken(expectedPassword);
 
+  // Check for valid session cookie first
+  const sessionToken = getCookie(request, COOKIE_NAME);
+  if (sessionToken === expectedToken) {
+    return next();
+  }
+
+  // Check Basic Auth header
   const authorization = request.headers.get('Authorization');
 
   if (authorization) {
@@ -41,7 +75,16 @@ export const onRequest = async (context: PagesContext): Promise<Response> => {
       const [username, password] = decoded.split(':');
 
       if (username === expectedUsername && password === expectedPassword) {
-        return next();
+        // Auth succeeded — set session cookie and redirect to the same URL
+        // so the browser loads the page with the cookie on all sub-requests
+        const cookie = `${COOKIE_NAME}=${expectedToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${COOKIE_MAX_AGE}`;
+        return new Response(null, {
+          status: 302,
+          headers: {
+            Location: request.url,
+            'Set-Cookie': cookie,
+          },
+        });
       }
     }
   }
