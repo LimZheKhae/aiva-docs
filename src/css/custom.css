@@ -607,6 +607,191 @@ article > header + p {
 }
 
 /* ═══════════════════════════════════════
+   SEARCH — Claude-inspired editorial theme
+
+   Note: The plugin uses CSS modules so class names are hashed.
+   We must style via --search-local-* CSS custom properties
+   and attribute selectors [class*="..."] for overrides.
+   ═══════════════════════════════════════ */
+
+/* ── Light mode tokens ── */
+:root {
+  --search-local-modal-background: #FAF9F3;
+  --search-local-modal-shadow: 0 8px 40px rgba(20, 20, 19, 0.14), 0 1px 3px rgba(20, 20, 19, 0.08);
+  --search-local-modal-width: 520px;
+  --search-local-hit-background: transparent;
+  --search-local-hit-shadow: none;
+  --search-local-hit-color: #141413;
+  --search-local-hit-height: 48px;
+  --search-local-highlight-color: #C7593A;
+  --search-local-hit-active-color: #141413;
+  --search-local-muted-color: #726F6A;
+  --search-local-spacing: 8px;
+  --search-local-icon-stroke-width: 1.4;
+  --search-local-input-active-border-color: var(--ifm-color-primary);
+}
+
+/* ── Dark mode tokens ── */
+[data-theme='dark'] {
+  --search-local-modal-background: #1F1E1D;
+  --search-local-modal-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --search-local-hit-background: transparent;
+  --search-local-hit-shadow: none;
+  --search-local-hit-color: #FAF9F3;
+  --search-local-highlight-color: #D97757;
+  --search-local-hit-active-color: #FAF9F3;
+  --search-local-muted-color: #9A9790;
+}
+
+/* ── Search input ── */
+.navbar__search-input {
+  font-family: var(--claude-font-ui);
+  font-size: 0.88rem;
+  font-weight: 450;
+  background-color: var(--ifm-background-surface-color);
+  border: 1px solid var(--claude-rule-color);
+  border-radius: 6px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.navbar__search-input:focus {
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 0 0 3px rgba(199, 89, 58, 0.08);
+}
+
+[data-theme='dark'] .navbar__search-input {
+  background-color: #30302E !important;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M6.02945,10.20327a4.17382,4.17382,0,1,1,4.17382-4.17382A4.15609,4.15609,0,0,1,6.02945,10.20327Zm9.69195,4.2199L10.8989,9.59979A5.88021,5.88021,0,0,0,12.058,6.02856,6.00467,6.00467,0,1,0,9.59979,10.8989l4.82338,4.82338a.89729.89729,0,0,0,1.29912,0,.89749.89749,0,0,0-.00089-1.29811Z" fill="%239A9790"/></svg>') !important;
+  border-color: rgba(221, 216, 202, 0.20);
+  color: #FAF9F3;
+}
+
+[data-theme='dark'] .navbar__search-input:focus {
+  border-color: #D97757;
+  box-shadow: 0 0 0 3px rgba(217, 119, 87, 0.10);
+}
+
+/* ── Override cursor/active background via attribute selectors ──
+   The plugin's --search-local-highlight-color controls BOTH mark text
+   AND cursor background. We set it to primary for visible marks,
+   then override cursor background separately via [class*="cursor"]. */
+[class*="suggestion"][class*="cursor"] {
+  background-color: #E8E6DC !important;
+}
+
+[data-theme='dark'] [class*="suggestion"][class*="cursor"] {
+  background-color: #3A3A37 !important;
+}
+
+/* Keep text readable on active row */
+[class*="suggestion"][class*="cursor"],
+[class*="suggestion"][class*="cursor"] mark {
+  color: #141413 !important;
+}
+
+[data-theme='dark'] [class*="suggestion"][class*="cursor"],
+[data-theme='dark'] [class*="suggestion"][class*="cursor"] mark {
+  color: #FAF9F3 !important;
+}
+
+/* Mark underline on active */
+[class*="suggestion"][class*="cursor"] mark {
+  text-decoration: underline !important;
+  text-underline-offset: 2px !important;
+}
+
+/* ── Result items — flat list, no card shadows ── */
+[class*="suggestion"] {
+  box-shadow: none !important;
+  border-radius: 6px !important;
+  font-family: var(--claude-font-ui) !important;
+}
+
+/* ── Highlighted match text ──
+   Primary styling is patched in the plugin's SearchBar.module.css
+   via the postinstall script (scripts/patch-search.js).
+   These are fallbacks in case the patch isn't applied. */
+[class*="hitWrapper"] mark,
+[class*="dropdownMenu"] mark,
+.navbar mark {
+  font-weight: 700 !important;
+  background: rgba(199, 89, 58, 0.15) !important;
+  color: var(--search-local-highlight-color, #C7593A) !important;
+  text-decoration: none !important;
+  border-radius: 2px !important;
+  padding: 0 1px !important;
+}
+
+[data-theme='dark'] [class*="hitWrapper"] mark,
+[data-theme='dark'] [class*="dropdownMenu"] mark,
+[data-theme='dark'] .navbar mark {
+  background: rgba(217, 119, 87, 0.22) !important;
+  color: var(--search-local-highlight-color, #D97757) !important;
+}
+
+/* ── Hit title & path typography ── */
+[class*="hitTitle"] {
+  font-family: var(--claude-font-ui);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+[class*="hitPath"] {
+  font-family: var(--claude-font-ui);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  opacity: 0.65;
+}
+
+/* ── Icons — lighter, thinner ── */
+[class*="hitIcon"] {
+  opacity: 0.4;
+}
+
+[class*="hitAction"] {
+  opacity: 0.3;
+  transition: opacity 0.12s ease;
+}
+
+[class*="suggestion"][class*="cursor"] [class*="hitAction"] {
+  opacity: 0.6;
+}
+
+/* ── "See all results" footer ── */
+[class*="hitFooter"] {
+  font-family: var(--claude-font-ui);
+  font-size: 0.78rem;
+  padding-top: 8px;
+  border-top: 1px solid var(--claude-rule-color);
+  margin-top: 8px;
+}
+
+[class*="hitFooter"] a {
+  color: var(--ifm-color-primary) !important;
+  text-decoration: none !important;
+  font-weight: 500;
+}
+
+[class*="hitFooter"] a:hover {
+  text-decoration: underline !important;
+}
+
+/* ── No results state ── */
+[class*="noResults"] {
+  font-family: var(--claude-font-ui);
+  font-size: 0.88rem;
+  color: var(--search-local-muted-color);
+  padding: 24px 0;
+}
+
+/* ── Dropdown container ── */
+[class*="dropdownMenu"] {
+  border: 1px solid var(--claude-rule-color) !important;
+  border-radius: 8px !important;
+}
+
+/* ═══════════════════════════════════════
    TEXT SELECTION
    ═══════════════════════════════════════ */
 ::selection {

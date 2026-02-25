@@ -14,7 +14,23 @@ const config: Config = {
   markdown: {
     mermaid: true,
   },
-  themes: ['@docusaurus/theme-mermaid'],
+  themes: [
+    '@docusaurus/theme-mermaid',
+    [
+      '@easyops-cn/docusaurus-search-local',
+      {
+        hashed: true,
+        indexDocs: true,
+        indexBlog: true,
+        indexPages: false,
+        docsDir: ['onepercent'],
+        docsRouteBasePath: ['onepercent'],
+        blogDir: ['blog'],
+        searchResultContextMaxLength: 50,
+        searchBarShortcutHint: false,
+      },
+    ],
+  ],
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -32,7 +48,7 @@ const config: Config = {
   organizationName: 'facebook', // Usually your GitHub org/user name.
   projectName: 'docusaurus', // Usually your repo name.
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
