@@ -138,10 +138,10 @@ Configure Nginx to route traffic from your domains to the Next.js apps:
 # Admin app
 server {
     listen 443 ssl;
-    server_name admin.yourgym.com;
+    server_name admin.onepercentfitness.my;
 
-    ssl_certificate /etc/letsencrypt/live/admin.yourgym.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/admin.yourgym.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/admin.onepercentfitness.my/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/admin.onepercentfitness.my/privkey.pem;
 
     location / {
         proxy_pass http://localhost:3000;
@@ -159,10 +159,10 @@ server {
 # Portal app
 server {
     listen 443 ssl;
-    server_name portal.yourgym.com;
+    server_name portal.onepercentfitness.my;
 
-    ssl_certificate /etc/letsencrypt/live/portal.yourgym.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/portal.yourgym.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/portal.onepercentfitness.my/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/portal.onepercentfitness.my/privkey.pem;
 
     location / {
         proxy_pass http://localhost:3002;
@@ -182,7 +182,7 @@ server {
 Use Certbot to generate free SSL certificates from Let's Encrypt:
 
 ```bash
-sudo certbot --nginx -d admin.yourgym.com -d portal.yourgym.com
+sudo certbot --nginx -d admin.onepercentfitness.my -d portal.onepercentfitness.my
 ```
 :::
 
@@ -202,8 +202,8 @@ pm2 restart all
 
 Add your production, staging, and preview URLs to the Supabase **Auth > URL Configuration** settings:
 
-- `https://admin.yourgym.com/**`
-- `https://portal.yourgym.com/**`
+- `https://admin.onepercentfitness.my/**`
+- `https://portal.onepercentfitness.my/**`
 - `https://*.vercel.app/**` (for Vercel staging/preview deployments)
 
 ### Image remote patterns

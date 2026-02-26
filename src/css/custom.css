@@ -343,6 +343,30 @@ hr {
   box-shadow: none;
 }
 
+/* Center nav items: logo left, items centered, search right */
+.navbar__inner {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+/* Left group (logo + nav items) and right group each take equal space */
+.navbar__items:not(.navbar__items--right) {
+  flex: 1 1 0;
+  justify-content: center;
+}
+
+.navbar__items--right {
+  flex: 1 1 0;
+  justify-content: flex-end;
+}
+
+/* Pull the logo/brand back to the left edge */
+.navbar__brand {
+  margin-right: auto;
+  position: absolute;
+  left: var(--ifm-navbar-padding-horizontal, 1rem);
+}
+
 .navbar__title {
   font-family: var(--claude-font-ui);
   font-weight: 700;

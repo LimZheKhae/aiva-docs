@@ -12,7 +12,7 @@ This guide walks you through your first login to both the admin dashboard and th
 
 ### Log in
 
-1. Open your browser and go to your gym's admin URL (e.g., `admin.yourgym.com`).
+1. Open your browser and go to your gym's admin URL (e.g., `admin.onepercentfitness.my`).
 1. Enter your staff email and password.
 1. Click **Sign in**.
 
@@ -49,7 +49,7 @@ Click your profile area in the sidebar and select **Sign out**.
 
 ### Log in
 
-1. Open the portal URL (e.g., `portal.yourgym.com`) on your phone or browser.
+1. Open the portal URL (e.g., `portal.onepercentfitness.my`) on your phone or browser.
 1. Enter your email and password.
 1. Tap **Sign in**.
 

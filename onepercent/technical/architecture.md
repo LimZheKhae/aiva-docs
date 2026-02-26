@@ -215,7 +215,7 @@ This filtering is enforced at both the API query level and the UI filter level.
 | Layer | Technology |
 | --- | --- |
 | Monorepo | Turborepo with npm workspaces |
-| Framework | Next.js 15 (App Router) |
+| Framework | Next.js 16 (App Router) |
 | Language | TypeScript (strict mode) |
 | UI | React 19, Tailwind CSS v4, shadcn/ui |
 | Database | Supabase (PostgreSQL), custom `gym` schema |
