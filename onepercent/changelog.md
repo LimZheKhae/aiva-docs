@@ -43,7 +43,7 @@ Notable changes to Onepercent, organized by development phase. Format follows [K
 ### Changed
 
 - Migrate to Turborepo monorepo architecture (admin + portal + shared packages).
-- Assigned trainer now references from `member_package` instead of `member` table.
+- Trainer assignment now lives in `member_package.trainer_id` instead of the `member` table.
 
 ## Phase 2 — 2024–2025
 

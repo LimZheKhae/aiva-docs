@@ -139,6 +139,37 @@ All catalog fields listed above. The name field has a real-time duplicate check 
 
 Eight free-text fields for describing package extras. Auto-expands in edit mode if any values exist.
 
+## T&C management
+
+**Components:** `src/components/operations/tnc-management-sheet.tsx`, `src/components/operations/tnc-editor.tsx`
+
+The **Manage T&C** button on the package catalog page opens a slide-over sheet for creating and versioning T&C templates. Gated by `operations-package.can_edit`.
+
+### T&C list sheet
+
+A right-side sheet showing all T&C templates filtered by the staff member's branch. Each card displays the branch name, version badge, created date, and an HTML content preview (sanitized with DOMPurify, clamped to 2 lines). A copy/edit button opens the editor dialog.
+
+### T&C editor dialog
+
+A full-screen dialog with a Tiptap rich text editor. Supports bold, italic, underline, strikethrough, H1–H4, text alignment, ordered/bullet lists, blockquotes, horizontal rules, and undo/redo.
+
+| Field | Details |
+| --- | --- |
+| **Branch** | Select from accessible branches. Disabled when editing (locked to the original branch). |
+| **Version** | Auto-incremented — fetches the latest version for the selected branch and adds 1. |
+| **Content** | Rich text area. Saved as HTML in `tnc.body`. |
+
+### Versioning behavior
+
+Editing a T&C doesn't update the existing record — it creates a new version and deactivates the previous one. This preserves the integrity of signed T&C records, since members' signatures reference the exact version they agreed to.
+
+| Action | What happens |
+| --- | --- |
+| **Create** | Inserts a new `tnc` row with `status = 'active'` and auto-incremented version. |
+| **Edit (new version)** | Inserts a new version with `status = 'active'`, then sets the old version to `inactive`. |
+
+**Data hook:** `src/hooks/use-tnc.ts` — SWR hook querying the `tnc` table ordered by branch then version descending.
+
 ## Member enrollment
 
 Enrolling a member in a package happens from the member detail page via the **Add Package Modal** — a 3-step wizard.

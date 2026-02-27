@@ -82,9 +82,9 @@ The staff permissions table has 7 policies separating admin and super admin acce
 
 | Policy | Command | Rule |
 | --- | --- | --- |
-| `staff_permissions_admin_insert` | INSERT | Admins can insert permissions (no row-level check on insert). |
-| `staff_permissions_admin_update` | UPDATE | Admins can update permissions for staff in their branch. |
-| `staff_permissions_admin_delete` | DELETE | Admins can delete permissions for staff in their branch. |
+| `staff_permissions_admin_insert` | INSERT | Admins can insert permissions for staff in their branch, or for any staff if the admin's branch is "all branch." |
+| `staff_permissions_admin_update` | UPDATE | Admins can update permissions for staff in their branch, or for any staff if the admin's branch is "all branch." |
+| `staff_permissions_admin_delete` | DELETE | Admins can delete permissions for staff in their branch, or for any staff if the admin's branch is "all branch." |
 
 ### Super admin access
 

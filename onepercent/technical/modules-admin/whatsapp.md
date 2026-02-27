@@ -205,7 +205,7 @@ A right-side panel showing context about the person you're chatting with. Collap
 ### Sections
 
 1. **Profile header** — avatar, name, phone, status badge.
-2. **Member details** (if matched) — email, DOB, gender, branch, registration date, assigned trainer with category.
+2. **Member details** (if matched) — email, DOB, gender, branch, registration date.
 3. **Active packages** (if matched) — package name, remaining sessions, expiry date, trainer name.
 4. **Tags** — add/remove conversation tags with a color-coded selector.
 5. **Notes** — editable textarea for conversation notes.

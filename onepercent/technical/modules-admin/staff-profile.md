@@ -117,7 +117,7 @@ A full-screen dialog showing one staff member's complete profile with inline edi
 4. **Weekly schedule** — recurring schedules from `trainer_schedule`, showing time slots per day (Mon-Sun).
 5. **Specific date schedules** — upcoming non-recurring schedule entries within the next 7 days.
 6. **Specialization and certifications** — `specification` field rendered as badge chips (split by newline), editable textarea in edit mode.
-7. **Assigned members** — fetched live from `member` table where `assigned_trainer = trainer.id`.
+7. **Assigned members** — derived from `view_4_1_2_member_package` where `trainer_id` matches the trainer, counting unique members.
 
 ### Editable fields
 

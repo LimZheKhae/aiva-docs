@@ -367,6 +367,17 @@ hr {
   left: var(--ifm-navbar-padding-horizontal, 1rem);
 }
 
+/* Mobile: reset absolute positioning so brand doesn't overlap hamburger */
+@media (max-width: 996px) {
+  .navbar__brand {
+    position: static;
+  }
+
+  .navbar__items:not(.navbar__items--right) {
+    justify-content: flex-start;
+  }
+}
+
 .navbar__title {
   font-family: var(--claude-font-ui);
   font-weight: 700;

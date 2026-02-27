@@ -173,7 +173,7 @@ The detail page loads the member from the already-fetched `useMembers` list (no 
 
 - Avatar (uploaded file or DiceBear fallback).
 - Member name + ID badge.
-- Stats row: Member Since, Points Balance (amber), Branch Badge, Last Appointment, Assigned Trainer.
+- Stats row: Member Since, Points Balance (amber), Branch Badge, Last Appointment.
 - Action buttons: **Portal Invite**, **Edit Profile**, **Add Package** (all gated by `can_edit`).
 
 ### Info cards (4 horizontal)
@@ -284,7 +284,7 @@ Triggered by the "Edit Profile" button. Renders as an **inline panel** above the
 | Date of Birth | Yes | Max date: 10 years ago. |
 | Gender | Yes | |
 | Branch | Yes | Disabled for single-branch staff. |
-| Assigned Trainer | Yes | Filtered by member's branch. Disabled for trainers if an assignment already exists. |
+
 | Response Handler | Yes | AI Agent / Human. |
 | Tier | Yes | Company / Fans. |
 

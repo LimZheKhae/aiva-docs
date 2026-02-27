@@ -102,7 +102,7 @@ When you select a conversation, the right panel shows context about the contact:
 <!-- ![Member info panel](./assets/whatsapp-member-info.png) -->
 
 - **Profile** — avatar, name, phone, and status badge (Active, Expired, No Package, Lead, or Not a Member).
-- **Member details** (if matched) — email, DOB, gender, branch, registration date, and assigned trainer.
+- **Member details** (if matched) — email, DOB, gender, branch, and registration date.
 - **Active packages** — package name, remaining sessions, expiry date, and trainer.
 - **Tags** — conversation tags.
 - **Notes** — editable notes about the conversation.

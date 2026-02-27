@@ -52,7 +52,7 @@ Each column previews up to 3 items. Click **View All** to open a full list in a 
 
 ### Today's schedule
 
-A table showing all appointments for today, ordered by time. Each row displays the session time, member name, assigned trainer, and status.
+A table showing all appointments for today, ordered by time. Each row displays the session time, member name, trainer, and status.
 
 Appointment statuses you'll see:
 

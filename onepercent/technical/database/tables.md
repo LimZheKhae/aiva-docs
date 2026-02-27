@@ -35,7 +35,7 @@ Gym members and customers. Central entity that most other tables reference.
 | `source` | `source_channel` | | Marketing source channel. |
 | `handler` | `handler` | NN, default `ai agent` | WhatsApp message routing (ai agent or human). |
 | `branch` | `branch` | NN | Home branch (kota damansara, kepong, all branch). |
-| `assigned_trainer` | `uuid` | FK → staff | Default trainer assignment. |
+
 | `leads_id` | `uuid` | FK → leads | Linked lead if converted. |
 | `closed_by` | `uuid` | FK → staff | Staff who closed the sale. |
 | `tier` | `member_tier` | | Company or fans (affects commission). |
@@ -249,7 +249,7 @@ Terms and conditions documents. Versioned per branch.
 | --- | --- | --- | --- |
 | `id` | `uuid` | PK | T&C UUID. |
 | `created_at` | `timestamptz` | NN, default `now()` | Creation timestamp. |
-| `body` | `json` | | T&C content (structured JSON). |
+| `body` | `text` | | T&C content as HTML. |
 | `status` | `text` | | Active or inactive. |
 | `version` | `smallint` | | Version number. |
 | `branch` | `branch` | | Applicable branch. |

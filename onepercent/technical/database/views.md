@@ -64,7 +64,7 @@ Combines key metrics into a single summary row per month.
 
 The primary member view used across the admin app. Joins member data with computed fields.
 
-- **Sources:** `member`, `staff` (assigned trainer), `member_package`, `member_payment`
+- **Sources:** `member`, `staff`, `member_package`, `member_payment`
 - **Key fields:** All member columns plus trainer name, active package count, total payments, outstanding balance
 - **Used by:** Members list page, member search, member detail view
 
