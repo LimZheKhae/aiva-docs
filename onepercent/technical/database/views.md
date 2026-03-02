@@ -137,8 +137,8 @@ Member packages with joined member and package names, session calculations.
 Payment ledger showing debit, credit, and outstanding balance per member package.
 
 - **Sources:** `member_payment`, `member_package`
-- **Key fields:** member_package_id, total paid, outstanding balance, payment count
-- **Used by:** Payment recording — auto-fill outstanding, payment history
+- **Key fields:** member_package_id, total paid, outstanding balance, payment count, `trainer_id` (from `member_package`, used for trainer data scoping)
+- **Used by:** Payment recording — auto-fill outstanding, payment history, member detail ledger tab
 
 ### view_4_3_appointment
 

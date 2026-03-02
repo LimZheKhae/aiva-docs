@@ -106,7 +106,7 @@ Status indicator dots on day cells:
 
 ### Right sidebar
 
-Clicking a day in the calendar selects it and reveals a right-side panel showing that day's appointments. Each card has the full set of action buttons (check-in, approve, reject, reschedule, cancel, compensate). A "New Appointment" button lets you create a session for the selected date.
+Clicking a day in the calendar selects it and reveals a right-side panel showing that day's appointments. Each card has the full set of action buttons (check-in, approve, reject, reschedule, cancel, compensate, mark completed). A "New Appointment" button lets you create a session for the selected date. Past appointments show dimmed text/badges but keep action buttons fully visible.
 
 ### Calendar filters
 
@@ -197,6 +197,7 @@ flowchart TD
 
 - `confirmed` can only come from `pending pt`.
 - `acknowledged` can only come from `pending member`.
+- `completed` can come from `confirmed` or `acknowledged` (via admin Mark Completed or check-in). Only admins can set `completed` via the status API — trainers use the check-in flow instead.
 - Past appointments can't be cancelled.
 - `completed`, `cancelled`, and `cancelled penalty` are terminal — no further changes.
 
@@ -296,13 +297,21 @@ Returns a `conflictType` on failure: `'no_schedule'`, `'outside_window'`, `'bloc
 - **API:** `PATCH /api/appointments/[id]` with `{ start_time, end_time, addCompensation, skipScheduleValidation }`.
 - Records `rescheduled_from`, `rescheduled_by`, and `rescheduled_at` on the appointment.
 
-### Check in
+### Check in (Trainer)
 
-- **Visible on:** `confirmed` or `acknowledged` appointments within the past 30 days to today.
+- **Visible on:** `confirmed` or `acknowledged` appointments within the past 30 days to today. For past appointments, only visible to trainers (admins use Mark Completed instead).
 - **Flow:** Calls `submitTrainerCheckIn(appointmentId)` directly via the Supabase browser client.
 - **What it sets:** `trainer_signed_attendance_at = now`. Also sets `member_signed_attendance_at = now` only if the member hasn't already checked in (preserves portal check-in time).
-- **Late detection:** If `start_time < now`, the button shows "Late Check In" instead of "Check In". This is a visual indicator only — it doesn't block the action.
+- **Late detection:** If `start_time < now`, the button shows "Late Check In" in amber instead of the regular green "Check In". This is a visual indicator only — it doesn't block the action.
 - **After check-in:** The button is replaced by a green "Checked In \{time\}" badge.
+
+### Mark completed (Admin only)
+
+- **Visible on:** Past `confirmed` or `acknowledged` appointments. Only visible to admins and super admins.
+- **Flow:** Calls `PATCH /api/appointments/[id]/status` with `{ status: 'completed' }`.
+- **Server validation:** Only admins can use this endpoint with `completed` status. Trainers receive a 403 error. The appointment must be in `confirmed` or `acknowledged` status.
+- **What it sets:** `status = 'completed'`. Also auto-fills `trainer_signed_attendance_at` and `member_signed_attendance_at` with the current timestamp if they aren't already set (preserves existing check-in times).
+- **Where it appears:** Indigo "Complete" button in the list view, calendar event popup, "view all" past section, and day detail popup.
 
 ### Compensate (retroactive)
 
@@ -397,9 +406,20 @@ Used when trainer schedule changes (blocking/deleting slots) affect existing app
 - Appointment date must be between 30 days ago and today (inclusive).
 - Admins can check in any appointment. Trainers can only check in their own.
 
+### Role-based behavior for past appointments
+
+For past appointments (session time has passed), the check-in and completion buttons are split by role:
+
+| Role | Past appointment action | Button | Color |
+| --- | --- | --- | --- |
+| Trainer | **Late Check In** — calls `submitTrainerCheckIn()` directly | "Late Check In" | Amber (`bg-amber-500`) |
+| Admin / Super Admin | **Mark Completed** — calls `PATCH /api/appointments/[id]/status` with `completed` | "Complete" | Indigo (`bg-indigo-600`) |
+
+For upcoming appointments, both roles see the regular green "Check In" button (admins excluded from check-in on past appointments to avoid confusion with the Complete action).
+
 ### Late detection (`isLateCheckIn`)
 
-Returns `true` if the appointment's `start_time` has already passed. The button text changes to "Late Check In" but the action isn't blocked.
+Returns `true` if the appointment's `start_time` has already passed. For trainers, the button changes to amber "Late Check In". For admins, past appointments show the "Complete" button instead.
 
 ### Check-in flow (`submitTrainerCheckIn`)
 
@@ -407,6 +427,12 @@ Returns `true` if the appointment's `start_time` has already passed. The button 
 2. Set `trainer_signed_attendance_at = now` (always).
 3. Set `member_signed_attendance_at = now` only if it's currently `null` (preserves the member's own portal check-in time).
 4. Timestamps are stored as UTC ISO strings and displayed in the browser's local timezone.
+
+### Mark completed flow (admin API)
+
+1. Calls `PATCH /api/appointments/[id]/status` with `{ status: 'completed' }`.
+2. Server validates: only admins allowed (trainers get 403), appointment must be `confirmed` or `acknowledged`.
+3. Sets `status = 'completed'`. Auto-fills `trainer_signed_attendance_at` and `member_signed_attendance_at` with the current timestamp only if they aren't already set.
 
 ## Portal booking integration
 
@@ -435,7 +461,7 @@ Trainer availability flows from the schedule module into appointment booking:
 | --- | --- | --- |
 | `/api/appointments/[id]` | GET | Fetch a single appointment from `view_4_3_appointment`. |
 | `/api/appointments/[id]` | PATCH | Reschedule — update `start_time`, `end_time`. Records reschedule metadata. Supports `skipScheduleValidation`. |
-| `/api/appointments/[id]/status` | PATCH | Change status (approve, reject, cancel). Enforces transition rules. Sets cancellation metadata. |
+| `/api/appointments/[id]/status` | PATCH | Change status (approve, reject, cancel, complete). Enforces transition rules. Sets cancellation metadata. For `completed`: admin-only, auto-fills attendance timestamps. |
 | `/api/appointments/[id]/compensation` | PATCH | Toggle `is_compensated` flag. Validates eligibility (active package, within 30 days). |
 | `/api/appointments/available-slots` | GET | Returns available time slots for a trainer on a date. Params: `trainer_id`, `date`, `exclude_appointment_id`. |
 | `/api/appointments/validate-availability` | GET | Validates a specific time slot. Returns `isValid` and `conflictType`. |

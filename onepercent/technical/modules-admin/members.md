@@ -21,9 +21,11 @@ The members module is the largest module in the Admin app. It handles the full m
 The members list uses `useState` + `useEffect` with a **Supabase Realtime subscription** on the `gym.member` table. The hook:
 
 1. Queries `view_2_member` for all member records (ordered by `id` desc, branch-filtered).
-2. Queries `staff` for trainer name resolution.
+2. If the **My Members** toggle is on, pre-fetches member IDs from `member_package` where `trainer_id` matches the current staff and `package_end_date` hasn't passed, then filters the query with `.in("id", trainerMemberIds)`. If no matching IDs are found, returns an empty list immediately.
 3. Queries `appointment` for last appointment per member.
-4. Transforms raw `GymClient` rows into `Member` objects with computed fields: `age`, `memberSince`, `lastAppointment`, `trainerName`.
+4. Transforms raw `GymClient` rows into `Member` objects with computed fields: `age`, `memberSince`, `lastAppointment`.
+
+**Options:** `branch`, `role`, `staffId`, `myMembersOnly`, `enabled`.
 
 Realtime events (`INSERT`, `UPDATE`, `DELETE`) are applied to local state without re-fetching the full list. Branch filtering is applied to realtime events too.
 
@@ -60,6 +62,7 @@ Realtime events (`INSERT`, `UPDATE`, `DELETE`) are applied to local state withou
 | **Search Phone** | `contact.toString().includes(term)` |
 | **Status** | All / Active / Expired / Completed — exact match. |
 | **Branch** | Auto-locked for single-branch staff. All-branch staff get a picker with per-branch counts. |
+| **My Members** | Switch toggle. Default on for trainers, off for admins and superadmins. When enabled, only shows members who have an active package assigned to the current staff member. |
 
 ### Table columns
 
@@ -70,7 +73,6 @@ Realtime events (`INSERT`, `UPDATE`, `DELETE`) are applied to local state withou
 | **Date of Birth** | Toggleable (default: visible) | By `dateOfBirth` |
 | **Status** | Toggleable (default: visible) | By `status` (ordered: active → expired → completed) |
 | **Branch** | Toggleable (default: visible) | By `branch` |
-| **Trainer** | Toggleable (default: visible) | By `trainerName` |
 | **Last Appointment** | Toggleable (default: hidden) | By `lastAppointment` |
 
 Column visibility preferences are persisted to `localStorage` under key `members-visible-columns`.
@@ -169,12 +171,29 @@ A database trigger (`new_member_trigger` → `update_leads_status()`) also handl
 
 The detail page loads the member from the already-fetched `useMembers` list (no separate per-member API call). Detailed data (packages, payments, notes, etc.) is fetched directly by the component.
 
+### Trainer data scoping
+
+When the current user is a trainer, the detail page restricts what data is visible:
+
+- **Packages tab** — only shows packages where `trainer_id` matches the current trainer.
+- **Ledger tab** — only shows ledger entries where `trainer_id` matches the current trainer.
+- **Edit permission** — trainers can only edit members they have an active package with. The page checks `member_package` for an active record with `trainer_id = staff.id` and `package_end_date >= today`.
+
+### Permissions
+
+Action buttons are split across two permission checks:
+
+| Button | Permission required |
+| --- | --- |
+| **Portal Invite** / **Reset Password** | `members.can_edit` |
+| **Edit Profile** | `members.can_edit` (plus active package check for trainers) |
+| **Add Package** | `operations-package.can_edit` |
+
 ### Header
 
 - Avatar (uploaded file or DiceBear fallback).
 - Member name + ID badge.
 - Stats row: Member Since, Points Balance (amber), Branch Badge, Last Appointment.
-- Action buttons: **Portal Invite**, **Edit Profile**, **Add Package** (all gated by `can_edit`).
 
 ### Info cards (4 horizontal)
 
@@ -279,20 +298,27 @@ Triggered by the "Edit Profile" button. Renders as an **inline panel** above the
 | --- | --- | --- |
 | Avatar | Yes | Max 25MB, JPEG/PNG/WebP. Uploads to `member_avatar` Storage bucket. |
 | Name | Yes | |
-| Phone | Yes | Parsed and validated with `libphonenumber-js`. Uniqueness check excludes current member. |
+| Phone | Yes | Split country code dropdown + local number input. Parsed and validated with `libphonenumber-js`. Uniqueness check excludes current member. |
 | Email | Yes | |
 | Date of Birth | Yes | Max date: 10 years ago. |
 | Gender | Yes | |
 | Branch | Yes | Disabled for single-branch staff. |
-
 | Response Handler | Yes | AI Agent / Human. |
-| Tier | Yes | Company / Fans. |
+| Tier | Yes | Company / Fans. Disabled for trainers. |
 
 Saves directly via `supabase.from("member").update({...}).eq("id", member.id)` from the browser client.
 
 ## Portal invitation
 
-The "Portal Invite" button (disabled if the member has no email) calls `POST /api/members/[id]/invite-portal`:
+The portal invite button adapts based on whether the member already has a portal account. On mount, the page calls `GET /api/members/[id]/portal-status`, which runs the `check_portal_registered` database function to check if the member's email exists in `auth.users`.
+
+| Portal state | Button label | Icon | Action |
+| --- | --- | --- | --- |
+| Not registered | **Portal Invite** | Mail | Sends invite email |
+| Already registered | **Reset Password** | KeyRound | Sends password reset email |
+| Checking | **Checking...** | Spinner | Disabled while loading |
+
+The button calls `POST /api/members/[id]/invite-portal`:
 
 1. Looks up the member's email.
 2. Attempts `supabase.auth.admin.inviteUserByEmail()` with a redirect to the Portal's `/auth/callback?next=/reset-password`.
@@ -308,6 +334,7 @@ The "Portal Invite" button (disabled if the member has no email) calls `POST /ap
 | `/api/members/check-phone` | GET | Check phone uniqueness (supports `excludeId` param for edits). |
 | `/api/members/check-email` | GET | Check email uniqueness. |
 | `/api/members/[id]/invite-portal` | POST | Send portal invite or password reset email. |
+| `/api/members/[id]/portal-status` | GET | Check if the member has a registered portal account (calls `check_portal_registered` RPC). |
 
 ## Database views and tables
 

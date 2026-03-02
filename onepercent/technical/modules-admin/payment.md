@@ -14,10 +14,12 @@ The payment module tracks all financial transactions tied to member packages. It
 ## Data fetching
 
 **Hooks:**
-- `src/hooks/use-payments.ts` — Fetches `view_4_3_member_payment` and merges invoice remarks from `member_invoice`.
+- `src/hooks/use-payments.ts` — Fetches `view_4_3_member_payment` and merges invoice remarks from `member_invoice`. Accepts `staffId` and `staffCategory` options — when the current user is a trainer, payments are filtered by `trainer_id` so trainers only see payments for their assigned members.
 - `src/hooks/use-payment-filters.ts` — Fetches distinct filter option values (branch, payment type, payment plan) from the view.
 
 There are **no real-time subscriptions** on the payment module. Data is fetched on page load and refreshed manually via a "Refresh Data" button or automatically after adding a payment.
+
+**Trainer scoping** also applies to the **Member Ledger** tab — trainers only see ledger entries where `trainer_id` matches their staff ID. The payment export API (`GET /api/operations/payment/export`) enforces the same scoping server-side.
 
 ## Page layout
 

@@ -258,7 +258,7 @@ Export bypasses the SWR hooks and queries directly:
 
 - **Granularity:** Monthly (year + month integer pair).
 - **Period discovery:** `useCommissionPeriods()` queries distinct year/month combinations from the report view. Only periods with existing commission records appear as options.
-- **Auto-selection:** The most recent period is auto-selected on mount.
+- **Auto-selection:** Defaults to the current year and month on mount.
 - **Historical access:** All past periods with data are selectable with no limit.
 
 :::note

@@ -35,7 +35,6 @@ Gym members and customers. Central entity that most other tables reference.
 | `source` | `source_channel` | | Marketing source channel. |
 | `handler` | `handler` | NN, default `ai agent` | WhatsApp message routing (ai agent or human). |
 | `branch` | `branch` | NN | Home branch (kota damansara, kepong, all branch). |
-
 | `leads_id` | `uuid` | FK → leads | Linked lead if converted. |
 | `closed_by` | `uuid` | FK → staff | Staff who closed the sale. |
 | `tier` | `member_tier` | | Company or fans (affects commission). |

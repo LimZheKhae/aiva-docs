@@ -126,6 +126,14 @@ Updates an appointment bypassing the normal validation triggers.
 - **Called by:** Admin app via `.rpc()` for administrative overrides
 - **Logic:** Directly updates the appointment row without firing `validate_appointment` or `validate_remaining_sessions` triggers.
 
+### check_portal_registered(member_id_input)
+
+Checks whether a member has a registered portal account.
+
+- **Returns:** `boolean`
+- **Called by:** Admin app via `.rpc()` from `GET /api/members/[id]/portal-status`
+- **Logic:** Looks up the member's email, then checks if that email exists in `auth.users`.
+
 ### get_next_invoice_number()
 
 Returns the next sequential invoice number.

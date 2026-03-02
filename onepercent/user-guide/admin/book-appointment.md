@@ -56,7 +56,7 @@ The appointment is created with status **Scheduled** (when booked by staff) or *
 | --- | --- | --- |
 | **Pending PT** | Waiting for trainer confirmation. | System (portal bookings). |
 | **Scheduled** | Session is confirmed and on the calendar. | Staff or trainer (after confirming portal bookings). |
-| **Completed** | Session finished, attendance recorded. | Staff (after check-in). |
+| **Completed** | Session finished, attendance recorded. | Trainer (check-in), Admin (mark completed), or Member (portal check-in). |
 | **Cancelled** | Cancelled without penalty — session returned to package. | Staff. |
 | **Cancelled (Penalty)** | Cancelled with session deduction from package. | Staff. |
 
@@ -84,13 +84,26 @@ Click an appointment in the calendar or list to open the detail panel. From here
 1. If no penalty, you can optionally check **Add Compensation** to grant an extra session.
 1. Confirm.
 
-### Record attendance
+### Record attendance (Trainer)
 
 1. Click **Check In** on a scheduled appointment.
 1. The system records the check-in timestamp and marks the session as **Completed**.
+1. For past appointments where the session time has already passed, the button shows **Late Check In** in amber instead of the regular green.
 
 :::note
 Members can also check in themselves from the portal during the check-in window (15 minutes before start time through to the end of the session).
+:::
+
+### Mark as completed (Admin only)
+
+If a past appointment was never checked in by the trainer or member, admins can mark it as completed directly:
+
+1. Find the past appointment that's still showing as **Scheduled** (confirmed/acknowledged status).
+1. Click **Complete** (indigo button).
+1. The system sets the status to **Completed** and auto-fills both attendance timestamps.
+
+:::note
+This action is only available to admins and super admins. Trainers use the **Late Check In** button instead.
 :::
 
 ## Compensation sessions
@@ -117,3 +130,4 @@ Cancel all appointments for a date range (e.g., gym closure or trainer leave):
 - Portal bookings always arrive as **Pending PT** and need trainer confirmation.
 - Cancelled appointments with penalty deduct from the package's remaining sessions.
 - Completed appointments count toward the trainer's commission calculation.
+- For past appointments: trainers see **Late Check In** (amber), admins see **Complete** (indigo). Both result in a completed appointment.
